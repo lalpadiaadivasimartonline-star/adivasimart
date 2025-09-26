@@ -40,6 +40,7 @@ const corsOptions = {
       "https://adivasimart.com", // Production frontend
       "https://www.adivasimart.com", // Production frontend with www
       "https://z1x1nc5r-5173.inc1.devtunnels.ms",
+      "https://adivasimart-server.onrender.com",
       // req.headers.origin,
     ];
 
