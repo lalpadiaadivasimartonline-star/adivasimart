@@ -273,13 +273,7 @@ const clientSession = session({
   reconnect: true,
   acquireTimeout: 60000,
 });
-sessionStore.onError((error) => {
-  console.error("Admin session store error:", error);
-});
 
-clientSessionStore.onError((error) => {
-  console.error("Client session store error:", error);
-});
 
 const sessionMiddleware = (req, res, next) => {
   console.log(`Request path: ${req.path}, Method: ${req.method}`);
