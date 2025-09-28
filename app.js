@@ -143,7 +143,7 @@ const sessionStore = new MySQLStore({
   acquireTimeout: 60000,
   timeout: 60000,
   reconnect: true,
- //Session settings
+  //Session settings
   clearExpired: true,
   checkExpirationInterval: 900000, // 15 minutes
   expiration: 10 * 24 * 60 * 60 * 1000, // 10 days
@@ -241,8 +241,8 @@ const adminSession = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure: NODE_ENV === "production",
-    sameSite: "lax",
+    secure: NODE_ENV === "production" || false,
+    sameSite: NODE_ENV === "production" ? "none" : "lax",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   },
   genid: () => {
@@ -272,6 +272,13 @@ const clientSession = session({
   },
   reconnect: true,
   acquireTimeout: 60000,
+});
+sessionStore.onError((error) => {
+  console.error("Admin session store error:", error);
+});
+
+clientSessionStore.onError((error) => {
+  console.error("Client session store error:", error);
 });
 
 const sessionMiddleware = (req, res, next) => {

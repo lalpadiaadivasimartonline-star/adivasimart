@@ -104,12 +104,26 @@ exports.postLogin = async (req, res, next) => {
     req.session.userId = user.user_id;
     req.session.isLoggedIn = true;
     req.session.user = email;
-    res.json({
-      message: "Logged in",
-      userId: user.user_id,
-      isLoggedIn: req.session.isLoggedIn,
-      user: email,
-    });
+
+    req.session.save((saveErr) => {
+      if (saveErr) {
+        console.error("Session save error:", saveErr);
+        return res.status(500).json({ error: "Session save failed" });
+      }
+        
+      console.log("Session saved successfully:", {
+        userId: req.session.userId,
+        isLoggedIn: req.session.isLoggedIn,
+        sessionID: req.sessionID
+      });
+
+      res.json({
+        message: "Logged in",
+        userId: user.user_id,
+        isLoggedIn: req.session.isLoggedIn,
+        user: email,
+      });
+    }) 
   });
   // console.log("POST LOGIN SESSION", req.session);
 };
