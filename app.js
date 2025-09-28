@@ -139,7 +139,11 @@ const sessionStore = new MySQLStore({
   password: process.env.DB_PASSWORD || "Badal@25102000",
   database: process.env.DB_NAME || "u813762469_Lalpadia",
   port: process.env.DB_PORT || 3306,
-  //
+  //Connection settings
+  acquireTimeout: 60000,
+  timeout: 60000,
+  reconnect: true,
+ //Session settings
   clearExpired: true,
   checkExpirationInterval: 900000, // 15 minutes
   expiration: 10 * 24 * 60 * 60 * 1000, // 10 days
@@ -184,7 +188,7 @@ const clientSessionStore = new MySQLStore({
   createDatabaseTable: true,
   connectionLimit: 5,
   endConnectionOnClose: false,
-  charser: "utf8mb4_bin",
+  charset: "utf8mb4_bin",
   schema: {
     tableName: "client_sessions",
     columnNames: {
@@ -237,7 +241,7 @@ const adminSession = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure: false,
+    secure: NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   },
@@ -271,6 +275,7 @@ const clientSession = session({
 });
 
 const sessionMiddleware = (req, res, next) => {
+  console.log(`Request path: ${req.path}, Method: ${req.method}`);
   if (req.path.startsWith("/admin")) {
     return adminSession(req, res, next);
   } else if (req.path.startsWith("/client") || req.path.startsWith("/api")) {

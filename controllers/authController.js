@@ -98,6 +98,7 @@ exports.postLogin = async (req, res, next) => {
   req.session.userId = user.user_id;
   req.session.regenerate((err) => {
     if (err) {
+      console.error("Session regeneration error:", err);
       return res.status(500).json({ error: "Session error" });
     }
     req.session.userId = user.user_id;
