@@ -461,16 +461,38 @@ const requireAPIClient = (req, res, next) => {
   next();
 };
 
-app.use("/admin", requireAPIClient);
+app.use((req, res, next) => {
+  console.log(`=== ROUTE DEBUG ===`);
+  console.log(`Method: ${req.method}`);
+  console.log(`Original URL: ${req.originalUrl}`);
+  console.log(`Path: ${req.path}`);
+  console.log(`Base URL: ${req.baseUrl}`);
+  console.log(`==================`);
+  next();
+});
 
-app.use("/admin/api/add-product", uploadFields, adminRouter);
+app.use("/admin", requireAPIClient);
 app.use("/admin/api/auth", authRouter);
+app.use("/admin/api/add-product", uploadFields, adminRouter);
+
 app.use("/admin/api", uploadFields, adminRouter);
 app.use("/api", customerAuthRouter);
 app.use("/guest/api", guestRouter);
 app.use("/client/api/", customerRouter);
 app.use("/payment/api", paymentRouter);
 app.use("/products", productRouter);
+
+app.use("*", (req, res) => {
+  console.log(`404 - Unhandled route: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({
+    error: "Route not found",
+    method: req.method,
+    url: req.originalUrl,
+    path: req.path,
+  });
+});
+
+
 
 // const PORT = 8080;
 app.listen(PORT, "0.0.0.0", () => {
