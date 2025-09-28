@@ -139,7 +139,7 @@ exports.postLogout = async (req, res, next) => {
 
 exports.getHome = async (req, res, next) => {
   console.log(
-    "USER ID",
+    "USER ID======================>",
     req.session.userId,
     req.session,
     req.session.isLoggedIn

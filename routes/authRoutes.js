@@ -11,7 +11,7 @@ const authRouter = express.Router();
 
 
 function requireAuth(req, res, next) {
-  // console.log("AUTH ROUTES", req.session.userId);
+  console.log("AUTH ROUTES", req.session.userId);
   if (req.session.userId && req.session) {
     return next();
   }
