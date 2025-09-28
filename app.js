@@ -237,7 +237,7 @@ const adminSession = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production" || false,
+    secure: true,
     sameSite: "lax",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   },
