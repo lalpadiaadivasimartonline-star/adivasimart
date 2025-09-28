@@ -119,7 +119,7 @@ exports.postLogin = async (req, res, next) => {
 
       res.json({
         message: "Logged in",
-        userId: user.user_id,
+        userId: req.session.userId,
         isLoggedIn: req.session.isLoggedIn,
         user: email,
       });

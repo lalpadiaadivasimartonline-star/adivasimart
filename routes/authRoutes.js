@@ -23,7 +23,7 @@ authRouter.post('/signup', authControllers.postSignup);
 authRouter.post('/login', authControllers.postLogin);
 authRouter.post('/logout', authControllers.postLogout);
 authRouter.post("/", requireAuth, authControllers.getHome);
-authRouter.post('/home',requireAuth, authControllers.getHome);
+authRouter.get('/home',requireAuth, authControllers.getHome);
 
 
 module.exports = authRouter;
