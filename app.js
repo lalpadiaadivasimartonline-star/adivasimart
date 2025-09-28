@@ -237,7 +237,7 @@ const adminSession = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure: true,
+    secure: false,
     sameSite: "lax",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   },
