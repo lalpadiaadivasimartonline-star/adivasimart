@@ -482,15 +482,15 @@ app.use("/client/api/", customerRouter);
 app.use("/payment/api", paymentRouter);
 app.use("/products", productRouter);
 
-app.use("*", (req, res) => {
-  console.log(`404 - Unhandled route: ${req.method} ${req.originalUrl}`);
-  res.status(404).json({
-    error: "Route not found",
-    method: req.method,
-    url: req.originalUrl,
-    path: req.path,
-  });
-});
+// app.use("*", (req, res) => {
+//   console.log(`404 - Unhandled route: ${req.method} ${req.originalUrl}`);
+//   res.status(404).json({
+//     error: "Route not found",
+//     method: req.method,
+//     url: req.originalUrl,
+//     path: req.path,
+//   });
+// });
 
 
 
