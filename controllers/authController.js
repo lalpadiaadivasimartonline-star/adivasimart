@@ -124,7 +124,12 @@ exports.postLogout = async (req, res, next) => {
 }
 
 exports.getHome = async (req, res, next) => {
-  // console.log('USER ID',req.session.userId)
+  console.log(
+    "USER ID",
+    req.session.userId,
+    req.session,
+    req.session.isLoggedIn
+  );
   // const [rows] = await db.execute(
   //   `SELECT user_id, email password FROM users WHERE user_id=?`,
   //   [req.session.userId]
