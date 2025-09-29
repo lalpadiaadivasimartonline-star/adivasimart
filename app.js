@@ -43,6 +43,7 @@ const corsOptions = {
       "http://localhost:5173", // Vite dev server
       "http://localhost:5174",
       "http://192.168.43.2:5173",
+      "http://192.168.43.2:5174",
       "https://adivasimart.com", // Production frontend
       "https://www.adivasimart.com", // Production frontend with www
       "https://admin.adivasimart.com",
