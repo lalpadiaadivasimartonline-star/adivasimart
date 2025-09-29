@@ -474,13 +474,15 @@ app.use((req, res, next) => {
 app.use("/admin", requireAPIClient);
 app.use("/admin/api/auth", authRouter);
 app.use("/admin/api/add-product", uploadFields, adminRouter);
-
+app.use("/admin/products", adminRouter);
 app.use("/admin/api", uploadFields, adminRouter);
 app.use("/api", customerAuthRouter);
 app.use("/guest/api", guestRouter);
 app.use("/client/api/", customerRouter);
 app.use("/payment/api", paymentRouter);
 app.use("/products", productRouter);
+
+
 
 // app.use("*", (req, res) => {
 //   console.log(`404 - Unhandled route: ${req.method} ${req.originalUrl}`);

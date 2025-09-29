@@ -61,6 +61,12 @@ module.exports = class Order {
       throw error;
     }
   }
+  static async findOrders() {
+    const rows = await db.execute(
+      `SELECT * FROM order_items JOIN orders ON order_items.order_id = orders.order_id`
+    );
+    return rows;
+  }
 
   static async findById(orderId) {
     try {
