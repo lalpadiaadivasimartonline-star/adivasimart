@@ -266,97 +266,66 @@ const clientSession = session({
 });
 
 
-// const sessionMiddleware = (req, res, next) => {
-//   console.log(`Request path: ${req.path}, Method: ${req.method}`);
-//    console.log(`=== SESSION MIDDLEWARE DEBUG ===`);
-//    console.log(`Request path: ${req.path}, Method: ${req.method}`);
-//    console.log(`Request headers:`, {
-//      cookie: req.headers.cookie,
-//      origin: req.headers.origin,
-//      userAgent: req.headers["user-agent"]?.substring(0, 50) + "...",
-//    });
-  
-//   if (req.path.startsWith("/admin")) {
-//     console.log("🔵 Using ADMIN session for:", req.path);
-//     return adminSession(req, res, (err) => {
-//       if (err) {
-//         console.error("Admin session error:", err);
-//         return next(err);
-//       }
-//       console.log("Admin session initialized:", {
-//         sessionID: req.sessionID,
-//         hasSession: !!req.session,
-//         userId: req.session?.userId,
-//         isLoggedIn: req.session?.isLoggedIn
-//       });
-//       next();
-//     });
-//   } else if (req.path.startsWith("/client") || req.path.startsWith("/api")) {
-//     return clientSession(req, res, next);
-//   } else {
-//     // Default to client session for general routes
-//     return clientSession(req, res, next);
-//   }
-// };
+
 
 const sessionMiddleware = (req, res, next) => {
-  console.log(`=== SESSION MIDDLEWARE DEBUG ===`);
-  console.log(`Full URL: ${req.originalUrl}`);
-  console.log(`Path: ${req.path}`);
-  console.log(`Method: ${req.method}`);
-  console.log(`Request headers:`, {
-    cookie: req.headers.cookie,
-    origin: req.headers.origin,
-    userAgent: req.headers["user-agent"]?.substring(0, 50) + "...",
-  });
+  // console.log(`=== SESSION MIDDLEWARE DEBUG ===`);
+  // console.log(`Full URL: ${req.originalUrl}`);
+  // console.log(`Path: ${req.path}`);
+  // console.log(`Method: ${req.method}`);
+  // console.log(`Request headers:`, {
+  //   cookie: req.headers.cookie,
+  //   origin: req.headers.origin,
+  //   userAgent: req.headers["user-agent"]?.substring(0, 50) + "...",
+  // });
 
   // Check what session will be used
   let sessionType = "";
   if (req.path.startsWith("/admin")) {
     sessionType = "ADMIN";
-    console.log("🔵 Using ADMIN session for:", req.path);
+    // console.log("🔵 Using ADMIN session for:", req.path);
     return adminSession(req, res, (err) => {
       if (err) {
         console.error("Admin session error:", err);
         return next(err);
       }
-      console.log("Admin session initialized:", {
-        sessionID: req.sessionID,
-        hasSession: !!req.session,
-        userId: req.session?.userId,
-        isLoggedIn: req.session?.isLoggedIn,
-        cookieName: "users",
-      });
+      // console.log("Admin session initialized:", {
+      //   sessionID: req.sessionID,
+      //   hasSession: !!req.session,
+      //   userId: req.session?.userId,
+      //   isLoggedIn: req.session?.isLoggedIn,
+      //   cookieName: "users",
+      // });
       next();
     });
   } else if (req.path.startsWith("/client") || req.path.startsWith("/api")) {
     sessionType = "CLIENT";
-    console.log("🟢 Using CLIENT session for:", req.path);
+    // console.log("🟢 Using CLIENT session for:", req.path);
     return clientSession(req, res, (err) => {
       if (err) {
         console.error("Client session error:", err);
         return next(err);
       }
-      console.log("Client session initialized:", {
-        sessionID: req.sessionID,
-        hasSession: !!req.session,
-        cookieName: "clients",
-      });
+      // console.log("Client session initialized:", {
+      //   sessionID: req.sessionID,
+      //   hasSession: !!req.session,
+      //   cookieName: "clients",
+      // });
       next();
     });
   } else {
     sessionType = "DEFAULT CLIENT";
-    console.log("🟡 Using DEFAULT client session for:", req.path);
+    // console.log("🟡 Using DEFAULT client session for:", req.path);
     return clientSession(req, res, (err) => {
       if (err) {
         console.error("Default session error:", err);
         return next(err);
       }
-      console.log("Default session initialized:", {
-        sessionID: req.sessionID,
-        hasSession: !!req.session,
-        cookieName: "clients",
-      });
+      // console.log("Default session initialized:", {
+      //   sessionID: req.sessionID,
+      //   hasSession: !!req.session,
+      //   cookieName: "clients",
+      // });
       next();
     });
   }
@@ -462,15 +431,15 @@ const requireAPIClient = (req, res, next) => {
   next();
 };
 
-app.use((req, res, next) => {
-  console.log(`=== ROUTE DEBUG ===`);
-  console.log(`Method: ${req.method}`);
-  console.log(`Original URL: ${req.originalUrl}`);
-  console.log(`Path: ${req.path}`);
-  console.log(`Base URL: ${req.baseUrl}`);
-  console.log(`==================`);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`=== ROUTE DEBUG ===`);
+//   console.log(`Method: ${req.method}`);
+//   console.log(`Original URL: ${req.originalUrl}`);
+//   console.log(`Path: ${req.path}`);
+//   console.log(`Base URL: ${req.baseUrl}`);
+//   console.log(`==================`);
+//   next();
+// });
 
 app.use("/admin", requireAPIClient);
 app.use("/admin/api/auth", authRouter);

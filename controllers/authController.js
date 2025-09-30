@@ -87,23 +87,53 @@ exports.postLogin = async (req, res, next) => {
   const user = rows[0];
   const matchPassword = await bcrypt.compare(password, user.password);
   if (!matchPassword) {
-    return res
-      .status(401)
-      .json({
-        error: "Invalid credentials",
-        isLoggedIn: req.session.isLoggedIn,
-      });
+    return res.status(401).json({
+      error: "Invalid credentials",
+      isLoggedIn: req.session.isLoggedIn,
+    });
   }
+const userData = {
+  userId: user.user_id,
+  email: email,
+};
+  // req.session.userId = user.user_id;
+  req.session.userId = userData.userId;
+  req.session.isLoggedIn = true;
+  req.session.user = userData.email;
 
-  req.session.userId = user.user_id;
+  // req.session.save((saveErr) => {
+  //   if (saveErr) {
+  //     console.error("Session save error:", saveErr);
+  //     return res.status(500).json({ error: "Session save failed" });
+  //   }
+
+  //   console.log("Session saved successfully:", {
+  //     userId: req.session.userId,
+  //     isLoggedIn: req.session.isLoggedIn,
+  //     sessionID: req.sessionID,
+  //   });
+
+  //   res.json({
+  //     message: "Logged in",
+  //     userId: req.session.userId,
+  //     isLoggedIn: req.session.isLoggedIn,
+  //     user: email,
+  //   });
+  // });
+
+  
+  
+
   req.session.regenerate((err) => {
     if (err) {
       console.error("Session regeneration error:", err);
       return res.status(500).json({ error: "Session error" });
     }
-    req.session.userId = user.user_id;
+    
+    // Now set data in the NEW regenerated session
+    req.session.userId = userData.userId;
     req.session.isLoggedIn = true;
-    req.session.user = email;
+    req.session.user = userData.email;
 
     req.session.save((saveErr) => {
       if (saveErr) {
@@ -111,21 +141,22 @@ exports.postLogin = async (req, res, next) => {
         return res.status(500).json({ error: "Session save failed" });
       }
         
-      console.log("Session saved successfully:", {
-        userId: req.session.userId,
-        isLoggedIn: req.session.isLoggedIn,
-        sessionID: req.sessionID
-      });
+      // console.log("Session saved successfully after regeneration:", {
+      //   userId: req.session.userId,
+      //   isLoggedIn: req.session.isLoggedIn,
+      //   sessionID: req.sessionID,
+      //   newSessionID: true
+      // });
 
       res.json({
         message: "Logged in",
         userId: req.session.userId,
         isLoggedIn: req.session.isLoggedIn,
-        user: email,
+        user: userData.email,
       });
-    }) 
+    });
   });
-  // console.log("POST LOGIN SESSION", req.session);
+  
 };
 
 exports.postLogout = async (req, res, next) => {

@@ -316,12 +316,13 @@ exports.getUserData = async (req, res, next) => {
 
 
 exports.getOrders = async (req, res, next) => {
-  const [rows] = await Order.findOrders();
-
-  console.log("ORDERS=============================================>",rows); 
-  // let orederItems = [];
+  const [rows] = await Order.findOrders(); 
   res.json({ orders: rows });
 };
+
+exports.filterOrders = async (req, res, next) => {
+  
+}
 
 
 
