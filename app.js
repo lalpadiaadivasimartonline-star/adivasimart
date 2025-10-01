@@ -228,7 +228,7 @@ const adminSession = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "lax",
     maxAge: 10 * 24 * 60 * 60 * 1000,
     // domain: NODE_ENV === "production" ? ".adivasimart.com" : undefined,
@@ -251,7 +251,7 @@ const clientSession = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure:  false,
+    secure:  true,
     sameSite: "lax",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   },
@@ -385,7 +385,7 @@ const uploadFields = upload.fields([
 app.use(
   "/uploads",
   (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "http://localhost:5174");
+    res.header("Access-Control-Allow-Origin", "admin.adivasimart.com");
     res.header("Access-Control-Allow-Methods", "GET");
     res.header(
       "Access-Control-Allow-Headers",
