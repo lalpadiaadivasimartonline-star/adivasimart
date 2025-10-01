@@ -163,24 +163,33 @@ exports.postCustomerLogin = async (req, res, next) => {
         console.log(error);
         return res.status(500).json({ error: "Session error" });
       }
-      req.session.userId = row[0].customer_id;
-      req.session.isLoggedIn = true;
-      req.session.user = row[0];
       
+      req.session.save((err) => {
+        if (err) {
+          console.error("Session save error:", err);
+          return res.status(500).json({ error: "Session save failed" });
+        }
+        req.session.userId = row[0].customer_id;
+        req.session.isLoggedIn = true;
+        req.session.user = row[0];
+        res.send({
+          sessionID: req.sessionID,
+          cart,
+          favourites,
+          user: req.session.user,
+          userId: req.session.userId,
+          isLoggedIn: req.session.isLoggedIn,
+        });
 
-      res.json({
-        cart,
-        favourites,
-        user: req.session.user,
-        userId: req.session.userId,
-        isLoggedIn: req.session.isLoggedIn,
-      });
+      })
+
+      
     });
   }
 };
 
 exports.checkLoginStatus = async (req, res, next) => {
-  
+  console.log("CLIENT SESSIONS",req.session)
   if (!req.session || !req.session.user || !req.session.userId) {
     // console.log("REJECTED");
     return res.status(401).json({

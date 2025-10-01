@@ -11,7 +11,9 @@ const authRouter = express.Router();
 
 
 function requireAuth(req, res, next) {
-  console.log("AUTH ROUTES", req.session.userId);
+  // console.log("SessionID", req.sessionID)
+  // console.log("AUTH ROUTES", req.session.userId);
+  // console.log("VIEWS", req.session)
   if (req.session.userId && req.session) {
     return next();
   }
@@ -22,8 +24,8 @@ function requireAuth(req, res, next) {
 authRouter.post('/signup', authControllers.postSignup);
 authRouter.post('/login', authControllers.postLogin);
 authRouter.post('/logout', authControllers.postLogout);
-authRouter.post("/",requireAuth, authControllers.getHome);
-authRouter.get('/home',requireAuth, authControllers.getHome);
+// authRouter.post("/",requireAuth, authControllers.getHome);
+authRouter.post('/home',requireAuth, authControllers.getHome);
 
 
 module.exports = authRouter;

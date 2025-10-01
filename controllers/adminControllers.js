@@ -100,7 +100,8 @@ try {
   );
 
   await product.save();
-  res.status(201).json({
+  console.log("Product added successfully!");
+  res.json({
     success: true,
     message: "Product added successfully!",
     product: product,
@@ -112,8 +113,8 @@ try {
   });
   // res.status(201).json(product);
 } catch (error) {
-  console.error("Error adding product:", error);
-  res.status(500).json({
+  console.log("Error adding product:", error);
+  res.json({
     success: false,
     message: "Failed to add product",
     error: error.message,
@@ -122,8 +123,7 @@ try {
 };
   
 exports.editProduct = async (req, res, next) => {
-  const edit_Id = req.params.product_id;
-  // console.log("EDIT_ID", edit_Id)
+  
   //   console.log("=== EDIT PRODUCT DEBUG ===");
   //   console.log("req.method:", req.method);
   //   console.log("req.url:", req.url);
@@ -131,10 +131,13 @@ exports.editProduct = async (req, res, next) => {
   //   console.log("req.body:", req.body);
   //   console.log("Object.keys(req.body):", Object.keys(req.body || {}));
   //   console.log("req.files:", req.files);
-  //   console.log("req.params:", req.params);
+    console.log("req.params:", req.params);
   //   console.log("=== END DEBUG ===");
 
   try {
+    const edit_Id = req.params.product_id;
+    console.log("EDIT_ID", edit_Id);
+    console.log(req.body)
     const {
       product_name,
       short_description,
@@ -179,6 +182,21 @@ exports.editProduct = async (req, res, next) => {
     let user_id = existing.user_id;
 
     // console.log("EXISTING", existing);
+     if (typeof product_gallery === "string") {
+       try {
+         product_gallery = JSON.parse(product_gallery);
+       } catch (e) {
+         product_gallery = [];
+       }
+    }
+     if (typeof gallery_name === "string") {
+       try {
+         gallery_name = JSON.parse(gallery_name);
+       } catch (e) {
+         gallery_name = [];
+       }
+     }
+
 
     if (req.files && req.files.image && req.files.image.length > 0) {
       const filePath = path.join(rootDir, existing.product_image);
@@ -194,7 +212,7 @@ exports.editProduct = async (req, res, next) => {
       image_name = imageFile.filename;
     }
     if (req.files && req.files.gallery && req.files.gallery.length > 0) {
-      existing.product_gallery.map(image => {
+      JSON.parse(existing.product_gallery).map(image => {
         const filePath = path.join(rootDir, image);
         fs.unlink(filePath, err => {
           if (err) {
@@ -208,6 +226,10 @@ exports.editProduct = async (req, res, next) => {
       );
       gallery_name = req.files.gallery.map((file) => file.filename);
     }
+
+   
+    // Also parse gallery_name if needed
+   
 
     const updatedProduct = new Products(
       edit_Id,
@@ -264,10 +286,9 @@ exports.editProduct = async (req, res, next) => {
 };
 
 exports.getProducts = async (req, res, next) => {
-  const products = await Products.fetchAll()
+  const [products] = await Products.fetchAll()
   // console.log("========GETPRODUCT====", req.session);
-  // console.log(products)
-  res.send({ products: products });
+  res.json(products);
 };
 
 exports.getProductById = async (req, res, next) => {
@@ -297,7 +318,7 @@ exports.deleteProduct = async (req, res, next) => {
       return;
     }
   })
-  product_gallery.map(image => {
+  JSON.parse(product_gallery)?.map(image => {
     const imageFilePath = path.join(rootDir, image);
     fs.unlink(imageFilePath, err => {
       if (err) {
@@ -311,6 +332,7 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.getUserData = async (req, res, next) => {
   const userData = await Users.findUserById(req.params.user_id);
+  console.log(req.params.user_id, typeof req.params.user_id)
   res.json(userData[0][0]);
 }
 

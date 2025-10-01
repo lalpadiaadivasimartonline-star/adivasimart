@@ -92,14 +92,11 @@ exports.postLogin = async (req, res, next) => {
       isLoggedIn: req.session.isLoggedIn,
     });
   }
-const userData = {
-  userId: user.user_id,
-  email: email,
-};
+
   // req.session.userId = user.user_id;
-  req.session.userId = userData.userId;
-  req.session.isLoggedIn = true;
-  req.session.user = userData.email;
+  // req.session.userId = userData.userId;
+  // req.session.isLoggedIn = true;
+  // req.session.user = userData.email;
 
   // req.session.save((saveErr) => {
   //   if (saveErr) {
@@ -129,7 +126,10 @@ const userData = {
       console.error("Session regeneration error:", err);
       return res.status(500).json({ error: "Session error" });
     }
-    
+    const userData = {
+      userId: user.user_id,
+      email: email,
+    };
     // Now set data in the NEW regenerated session
     req.session.userId = userData.userId;
     req.session.isLoggedIn = true;
@@ -142,14 +142,16 @@ const userData = {
       }
         
       // console.log("Session saved successfully after regeneration:", {
+      //   session:req.session,
       //   userId: req.session.userId,
       //   isLoggedIn: req.session.isLoggedIn,
       //   sessionID: req.sessionID,
       //   newSessionID: true
       // });
 
-      res.json({
+      res.send({
         message: "Logged in",
+        sessionID: req.sessionID,
         userId: req.session.userId,
         isLoggedIn: req.session.isLoggedIn,
         user: userData.email,
@@ -169,12 +171,12 @@ exports.postLogout = async (req, res, next) => {
 }
 
 exports.getHome = async (req, res, next) => {
-  console.log(
-    "USER ID======================>",
-    req.session.userId,
-    req.session,
-    req.session.isLoggedIn
-  );
+  // console.log(
+  //   "USER ID======================>",
+  //   req.session.userId,
+  //   req.session,
+  //   req.session.isLoggedIn
+  // );
   // const [rows] = await db.execute(
   //   `SELECT user_id, email password FROM users WHERE user_id=?`,
   //   [req.session.userId]

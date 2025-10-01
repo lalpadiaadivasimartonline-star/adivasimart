@@ -49,7 +49,6 @@ const corsOptions = {
       "https://admin.adivasimart.com",
       "https://z1x1nc5r-5173.inc1.devtunnels.ms",
       "https://adivasimart-server.onrender.com",
-      // req.headers.origin,
     ];
 
     // Allow requests with no origin (mobile apps, Postman, etc.)
@@ -120,10 +119,6 @@ app.use("/admin/api/auth/login", authLimiter);
 app.use("/client/api/auth/login", authLimiter);
 
 const sessionStore = new MySQLStore({
-  // host: "localhost",
-  // user: "root",
-  // password: "Nonha@0605",
-  // database: "lalpadia",
 
   host: process.env.DB_HOST || "srv1401.hstgr.io",
   user: process.env.DB_USER || "u813762469_lalpadia",
@@ -138,18 +133,18 @@ const sessionStore = new MySQLStore({
   clearExpired: true,
   checkExpirationInterval: 900000, // 15 minutes
   expiration: 10 * 24 * 60 * 60 * 1000, // 10 days
-  createDatabaseTable: true,
+  createDatabaseTable: false,
   connectionLimit: 5,
   endConnectionOnClose: true,
-  charset: "utf8mb4_bin",
-  schema: {
-    tableName: "sessions",
-    columnNames: {
-      session_id: "session_id",
-      expires: "expires",
-      data: "data",
-    },
-  },
+  // charset: "utf8mb4_bin",
+  // schema: {
+  //   tableName: "sessions",
+  //   columnNames: {
+  //     session_id: "session_id",
+  //     expires: "expires",
+  //     data: "data",
+  //   },
+  // },
 });
 
 const clientSessionStore = new MySQLStore({
@@ -176,18 +171,18 @@ const clientSessionStore = new MySQLStore({
   clearExpired: true,
   checkExpirationInterval: 900000,
   expiration: 10 * 24 * 60 * 60 * 1000,
-  createDatabaseTable: true,
+  // createDatabaseTable: true,
   connectionLimit: 5,
   endConnectionOnClose: false,
-  charset: "utf8mb4_bin",
-  schema: {
-    tableName: "client_sessions",
-    columnNames: {
-      session_id: "session_id",
-      expires: "expires",
-      data: "data",
-    },
-  },
+  // charset: "utf8mb4_bin",
+  // schema: {
+  //   tableName: "client_sessions",
+  //   columnNames: {
+  //     session_id: "session_id",
+  //     expires: "expires",
+  //     data: "data",
+  //   },
+  // },
 });
 
 sessionStore.onReady(() => {
@@ -221,10 +216,11 @@ const randomString = (length) => {
 const SESSION_SECRET = process.env.SESSION_SECRET || randomString(32);
 const CLIENT_SESSION_SECRET =
   process.env.CLIENT_SESSION_SECRET || randomString(32);
+console.log("SESSION SECRET====", SESSION_SECRET);
 
 const adminSession = session({
-  key: "user.sid",
-  name: "users",
+  key: "users",
+  // name: "users",
   secret: SESSION_SECRET,
   store: sessionStore,
   resave: false,
@@ -232,21 +228,22 @@ const adminSession = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure: NODE_ENV === "production" || false,
-    sameSite: NODE_ENV === "production" ? "none" : "lax",
+    secure: false,
+    sameSite: "lax",
     maxAge: 10 * 24 * 60 * 60 * 1000,
+    // domain: NODE_ENV === "production" ? ".adivasimart.com" : undefined,
   },
-  genid: () => {
-    return randomString(32);
-  },
+  // genid: () => {
+  //   return randomString(32);
+  // },
 
   reconnect: true,
   acquireTimeout: 60000,
 });
 
 const clientSession = session({
-  key: "client.sid",
-  name: "clients",
+  key: "clients",
+  // name: "clients",
   secret: CLIENT_SESSION_SECRET,
   store: clientSessionStore,
   resave: false,
@@ -254,13 +251,13 @@ const clientSession = session({
   rolling: true,
   cookie: {
     httpOnly: true,
-    secure: NODE_ENV === "production" || false,
-    sameSite: NODE_ENV === "production" ? "none" : "lax",
+    secure:  false,
+    sameSite: "lax",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   },
-  genid: () => {
-    return randomString(32);
-  },
+  // genid: () => {
+  //   return randomString(32);
+  // },
   reconnect: true,
   acquireTimeout: 60000,
 });
@@ -285,6 +282,7 @@ const sessionMiddleware = (req, res, next) => {
     sessionType = "ADMIN";
     // console.log("🔵 Using ADMIN session for:", req.path);
     return adminSession(req, res, (err) => {
+      
       if (err) {
         console.error("Admin session error:", err);
         return next(err);
@@ -387,7 +385,7 @@ const uploadFields = upload.fields([
 app.use(
   "/uploads",
   (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", /*"http://localhost:5173"*/ "*");
+    res.header("Access-Control-Allow-Origin", "http://localhost:5174");
     res.header("Access-Control-Allow-Methods", "GET");
     res.header(
       "Access-Control-Allow-Headers",
@@ -443,8 +441,6 @@ const requireAPIClient = (req, res, next) => {
 
 app.use("/admin", requireAPIClient);
 app.use("/admin/api/auth", authRouter);
-app.use("/admin/api/add-product", uploadFields, adminRouter);
-app.use("/admin/products", adminRouter);
 app.use("/admin/api", uploadFields, adminRouter);
 app.use("/api", customerAuthRouter);
 app.use("/guest/api", guestRouter);

@@ -24,13 +24,13 @@ function requireAuth(req, res, next) {
     });
 }
 
-adminRouter.post('/', adminControllers.postAddProduct);
-adminRouter.get('/products',requireAuth, adminControllers.getProducts);
-adminRouter.get('/product/:product_id',requireAuth, adminControllers.getProductById);
+adminRouter.post('/add-product', adminControllers.postAddProduct);
+adminRouter.get('/products/get', adminControllers.getProducts);
+adminRouter.get('/product/:product_id', adminControllers.getProductById);
 adminRouter.get('/products/user/:userId', adminControllers.getProductsByUser)
 adminRouter.get('/user_data/:user_id', adminControllers.getUserData);
-adminRouter.get("/orders", requireAuth, adminControllers.getOrders);
-adminRouter.delete('/product/:product_id',requireAuth, adminControllers.deleteProduct);
+adminRouter.get("/products/orders", adminControllers.getOrders);
+adminRouter.delete('/product/delete/:product_id',requireAuth, adminControllers.deleteProduct);
 adminRouter.put('/product/edit/:product_id', adminControllers.editProduct);
 
 
