@@ -229,7 +229,7 @@ const adminSession = session({
   cookie: {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
     maxAge: 10 * 24 * 60 * 60 * 1000,
     // domain: NODE_ENV === "production" ? ".adivasimart.com" : undefined,
   },
@@ -252,7 +252,7 @@ const clientSession = session({
   cookie: {
     httpOnly: true,
     secure:  true,
-    sameSite: "lax",
+    sameSite: "none",
     maxAge: 10 * 24 * 60 * 60 * 1000,
   },
   // genid: () => {
